@@ -2,21 +2,28 @@ from flask import Flask
 
 app = Flask(__name__)
 
-# 载入自定义配置文件
-#app.config.from_object('config')
-# 获取配置文件的内容
-#print(app.config['AUTHOR'])
+@app.route("/book/search/<q>/<page>")
+def search(q, page):
+    """
+    q :普通关键字 isbn
+    page
+    """
 
-# 使用装饰器进行路由注册
-@app.route("/hello")
-def hello():
-    # 基于类的视图(即插视图)
-    return 'Hello, Muye'
+    # isbn13 13个0-9的数字组成
+    # isbn10 10个0-9的数字，包含'-'
 
-# 注册路由的另一种方法
-# app.add_url_rule('/hello', view_func=hello)
+    isbn_or_key = 'key' # 默认q为关键字
 
-# 确保生产环境（nginx + uwsgi）下此代码不会被执行
+    # 判断是否为isbn13
+    if len(q) == 13 and q.isdigit():
+        isbn_or_key = 'isbn'
+
+    # 判断是否为isbn10
+    short_q = q.replace('-', '')
+    if '-' in q and len(short_q) == 10 and short_q.isdigit():
+        isbn_or_key = 'isbn'
+
+    pass
+
 if __name__ == "__main__":
-    # 开启调试模式 指定端口 开放网络 启动内置服务器
     app.run(host='0.0.0.0', debug=True, port=5000)
