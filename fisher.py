@@ -1,31 +1,13 @@
-#import json
 from flask import Flask
-from flask import jsonify
-from helper import is_isbn_or_key
-from yushu_book import YuShuBook
-
-
 
 app = Flask(__name__)
+app.config.from_object('config')
 
-@app.route("/book/search/<q>/<page>")
-def search(q, page):
-    """
-    q :用户输入的查询参数
-    page
-    """
-    isbn_or_key = is_isbn_or_key(q)
+print('id为' + str(id(app)) + '的app实例化')
 
-    if isbn_or_key == 'isbn':
-        result = YuShuBook.search_by_isbn(q)
-    else:
-        result = YuShuBook.search_by_keyword(q)
-
-    # dict序列化 使用python自带json模块
-    # return json.dumps(result), 200, {'content-type':'application/json'}
-
-    # dict序列化 使用flask的jsonify
-    return jsonify(result)
+from app.web import book
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=True, port=5000)
+    # 进行调试的时候需要将debug设置为False以阻止Flask的调试
+    app.run(host='0.0.0.0', debug=False, port=5000)
+
