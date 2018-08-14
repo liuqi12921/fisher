@@ -1,10 +1,15 @@
-from flask import jsonify
-from fisher import app
+from flask import jsonify, Blueprint
 from helper import is_isbn_or_key
 from yushu_book import YuShuBook
 
 
-@app.route("/book/search/<q>/<page>")
+# 使用Flask蓝图用以分离视图函数
+
+web = Blueprint('web', __name__)
+
+
+# 将视图函数注册到蓝图上
+@web.route("/book/search/<q>/<page>")
 def search(q, page):
     """
     q :用户输入的查询参数
