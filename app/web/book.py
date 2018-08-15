@@ -1,25 +1,33 @@
-from flask import jsonify, Blueprint
+from flask import jsonify, request
+
+from app.forms.book import SearchForm
+from . import web
 from helper import is_isbn_or_key
 from yushu_book import YuShuBook
 
 
-# 使用Flask蓝图用以分离视图函数
-
-web = Blueprint('web', __name__)
-
-
 # 将视图函数注册到蓝图上
-@web.route("/book/search/<q>/<page>")
-def search(q, page):
+@web.route("/book/search")
+def search():
     """
     q :用户输入的查询参数
     page
     """
-    isbn_or_key = is_isbn_or_key(q)
+    # q = request.args['q']
+    # page = request.args['page']
 
-    if isbn_or_key == 'isbn':
-        result = YuShuBook.search_by_isbn(q)
+    form = SearchForm(request.args)
+    # 进行验证
+    if form.validate():
+        # 通过form取得q和page的值
+        q = form.q.data.strip() # 去除q前后的空格
+        page = form.page.data
+        isbn_or_key = is_isbn_or_key(q)
+        if isbn_or_key == 'isbn':
+            result = YuShuBook.search_by_isbn(q)
+        else:
+            result = YuShuBook.search_by_keyword(q, page)
+
+        return jsonify(result)
     else:
-        result = YuShuBook.search_by_keyword(q)
-
-    return jsonify(result)
+        return jsonify(form.errors)
