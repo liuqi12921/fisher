@@ -1,10 +1,9 @@
 from flask import jsonify, request
 
 from app.forms.book import SearchForm
+from app.libs.helper import is_isbn_or_key
+from app.spider.yushu_book import YuShuBook
 from . import web
-from helper import is_isbn_or_key
-from yushu_book import YuShuBook
-
 
 # 将视图函数注册到蓝图上
 @web.route("/book/search")

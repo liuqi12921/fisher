@@ -1,5 +1,7 @@
-from myhttp import HTTP
+
 from flask import current_app # 获取当前app对象
+
+from app.libs.httper import HTTP
 
 class YuShuBook:
 

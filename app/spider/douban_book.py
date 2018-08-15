@@ -1,4 +1,4 @@
-from myhttp import HTTP
+from app.libs.httper import HTTP
 
 class DouBanBook:
     isbn_url = 'https://api.douban.com/v2/book/isbn/{}'
